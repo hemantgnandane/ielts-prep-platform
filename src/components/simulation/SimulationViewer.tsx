@@ -11,10 +11,29 @@ import { Maximize2, Minimize2, BookOpen, HelpCircle, PenTool, Mic, Headphones } 
 
 export type ActivePracticeModule = 'reading' | 'writing' | 'speaking' | 'listening';
 
-export const SimulationViewer: React.FC = () => {
-  const [activeModule, setActiveModule] = useState<ActivePracticeModule>('reading');
+export interface SimulationViewerProps {
+  activeModule?: ActivePracticeModule;
+  onModuleChange?: (module: ActivePracticeModule) => void;
+  onBackToModules?: () => void;
+}
+
+export const SimulationViewer: React.FC<SimulationViewerProps> = ({
+  activeModule: externalModule,
+  onModuleChange,
+}) => {
+  const [internalModule, setInternalModule] = useState<ActivePracticeModule>('writing'); // defaults to writing or external
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [mobileTab, setMobileTab] = useState<'passage' | 'questions'>('passage');
+
+  const currentModule = externalModule || internalModule;
+
+  const handleModuleSelect = (mod: ActivePracticeModule) => {
+    if (onModuleChange) {
+      onModuleChange(mod);
+    } else {
+      setInternalModule(mod);
+    }
+  };
 
   const toggleFullscreen = () => {
     setIsFullscreen(prev => !prev);
@@ -23,77 +42,77 @@ export const SimulationViewer: React.FC = () => {
   return (
     <section
       id="simulation-engine"
-      className={`relative py-12 border-b border-[#e5e5e7] dark:border-[#27272a] bg-white dark:bg-[#0a0a0c] ${
+      className={`relative min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 md:py-10 bg-white dark:bg-[#0a0a0c] ${
         isFullscreen ? 'fixed inset-0 z-50 py-0 bg-white dark:bg-[#0a0a0c]' : ''
       }`}
     >
       <div className={`${isFullscreen ? 'h-screen flex flex-col' : 'w-full px-4 sm:px-8 lg:px-12 xl:px-16'}`}>
-        {/* Workspace Mode Switcher & Fullscreen Action */}
+        {/* Workspace Mode Switcher & Fullscreen Trigger */}
         {!isFullscreen && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            {/* Apple Minimalist Module Switcher Pills */}
-            <div className="inline-flex items-center p-1 rounded-xl border border-[#e5e5e7] dark:border-[#27272a] bg-[#fbfbfd] dark:bg-[#121215] text-xs font-medium">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+            {/* Module Switcher Pills */}
+            <div className="inline-flex items-center p-1 rounded-xl border border-[#e5e5e7] dark:border-[#27272a] bg-[#fbfbfd] dark:bg-[#121215] text-xs sm:text-sm font-medium">
               <button
                 type="button"
-                onClick={() => setActiveModule('reading')}
+                onClick={() => handleModuleSelect('writing')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
-                  activeModule === 'reading'
+                  currentModule === 'writing'
                     ? 'bg-[#1d1d1f] text-white dark:bg-[#ededed] dark:text-[#0a0a0c] shadow-subtle font-semibold'
                     : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
                 }`}
               >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Reading Simulation</span>
+                <PenTool className="w-4 h-4 text-[#e0001a]" />
+                <span>Writing CD-Interface</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setActiveModule('writing')}
+                onClick={() => handleModuleSelect('reading')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
-                  activeModule === 'writing'
+                  currentModule === 'reading'
                     ? 'bg-[#1d1d1f] text-white dark:bg-[#ededed] dark:text-[#0a0a0c] shadow-subtle font-semibold'
                     : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
                 }`}
               >
-                <PenTool className="w-3.5 h-3.5" />
-                <span>Writing Studio</span>
+                <BookOpen className="w-4 h-4" />
+                <span>Reading (40Q)</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setActiveModule('listening')}
+                onClick={() => handleModuleSelect('listening')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
-                  activeModule === 'listening'
+                  currentModule === 'listening'
                     ? 'bg-[#1d1d1f] text-white dark:bg-[#ededed] dark:text-[#0a0a0c] shadow-subtle font-semibold'
                     : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
                 }`}
               >
-                <Headphones className="w-3.5 h-3.5" />
+                <Headphones className="w-4 h-4" />
                 <span>Listening Lab</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setActiveModule('speaking')}
+                onClick={() => handleModuleSelect('speaking')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
-                  activeModule === 'speaking'
+                  currentModule === 'speaking'
                     ? 'bg-[#1d1d1f] text-white dark:bg-[#ededed] dark:text-[#0a0a0c] shadow-subtle font-semibold'
                     : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
                 }`}
               >
-                <Mic className="w-3.5 h-3.5" />
+                <Mic className="w-4 h-4" />
                 <span>Speaking Cue Card</span>
               </button>
             </div>
 
-            {/* Right: Fullscreen Trigger */}
+            {/* Right: Fullscreen Action */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleFullscreen}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#e5e5e7] dark:border-[#27272a] bg-[#fbfbfd] dark:bg-[#121215] text-xs font-semibold text-[#1d1d1f] dark:text-[#ededed] hover:border-[#86868b] transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#e5e5e7] dark:border-[#27272a] bg-[#fbfbfd] dark:bg-[#121215] text-xs sm:text-sm font-semibold text-[#1d1d1f] dark:text-[#ededed] hover:border-[#86868b] transition-colors"
               >
-                <Maximize2 className="w-3.5 h-3.5 text-[#e0001a]" />
+                <Maximize2 className="w-4 h-4 text-[#e0001a]" />
                 <span>Fullscreen Exam Mode</span>
               </button>
             </div>
@@ -103,15 +122,21 @@ export const SimulationViewer: React.FC = () => {
         {/* The CD-IELTS Main Application Window */}
         <div
           className={`relative flex flex-col rounded-2xl md:rounded-3xl border border-[#e5e5e7] dark:border-[#27272a] bg-white dark:bg-[#0a0a0c] shadow-apple dark:shadow-apple-dark overflow-hidden ${
-            isFullscreen ? 'flex-1 rounded-none border-none' : 'h-[800px]'
+            isFullscreen ? 'flex-1 rounded-none border-none' : 'h-[860px]'
           }`}
         >
-          {/* Top Exam Status Bar */}
-          <ExamTopBar />
+          {/* Module 1: Official CD-IELTS Writing Interface (matches uploaded screenshot exactly) */}
+          {currentModule === 'writing' && (
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <WritingWorkspace />
+            </div>
+          )}
 
-          {/* Module 1: Reading Simulator */}
-          {activeModule === 'reading' && (
+          {/* Module 2: Reading Simulator */}
+          {currentModule === 'reading' && (
             <>
+              <ExamTopBar />
+
               {/* Mobile Tab Switcher */}
               <div className="md:hidden flex border-b border-[#e5e5e7] dark:border-[#27272a] bg-[#fbfbfd] dark:bg-[#121215]">
                 <button
@@ -163,25 +188,24 @@ export const SimulationViewer: React.FC = () => {
             </>
           )}
 
-          {/* Module 2: Writing Studio */}
-          {activeModule === 'writing' && (
-            <div className="flex-1 min-h-0 overflow-hidden">
-              <WritingWorkspace />
-            </div>
-          )}
-
           {/* Module 3: Listening Lab */}
-          {activeModule === 'listening' && (
-            <div className="flex-1 min-h-0 overflow-hidden">
-              <ListeningWorkspace />
-            </div>
+          {currentModule === 'listening' && (
+            <>
+              <ExamTopBar />
+              <div className="flex-1 min-h-0 overflow-hidden">
+                <ListeningWorkspace />
+              </div>
+            </>
           )}
 
           {/* Module 4: Speaking Lab */}
-          {activeModule === 'speaking' && (
-            <div className="flex-1 min-h-0 overflow-hidden">
-              <SpeakingWorkspace />
-            </div>
+          {currentModule === 'speaking' && (
+            <>
+              <ExamTopBar />
+              <div className="flex-1 min-h-0 overflow-hidden">
+                <SpeakingWorkspace />
+              </div>
+            </>
           )}
 
           {/* Fullscreen Exit button */}
@@ -189,7 +213,7 @@ export const SimulationViewer: React.FC = () => {
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="absolute top-2.5 right-2.5 z-40 p-1.5 rounded-lg bg-black/70 text-white hover:bg-black transition-colors"
+              className="absolute top-2.5 right-2.5 z-40 p-2 rounded-lg bg-black/70 text-white hover:bg-black transition-colors"
               title="Exit fullscreen"
             >
               <Minimize2 className="w-4 h-4" />

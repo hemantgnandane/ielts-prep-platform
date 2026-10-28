@@ -1,18 +1,34 @@
 import React from 'react';
 import { BookOpen, PenTool, Headphones, Mic, ArrowRight } from 'lucide-react';
 import { useTrack } from '../../context/TrackContext';
+import { ActivePracticeModule } from '../simulation/SimulationViewer';
 
-export const DisciplinesGrid: React.FC = () => {
+export interface DisciplinesGridProps {
+  onSelectModule?: (mod: ActivePracticeModule) => void;
+}
+
+export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({ onSelectModule }) => {
   const { track } = useTrack();
 
-  const scrollToSimulation = () => {
+  const handleModuleClick = (modId: ActivePracticeModule) => {
+    if (onSelectModule) {
+      onSelectModule(modId);
+    }
     const el = document.getElementById('simulation-engine');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  const modules = [
+  const modules: Array<{
+    id: ActivePracticeModule;
+    icon: React.ReactNode;
+    title: string;
+    duration: string;
+    format: string;
+    highlight: string;
+    actionText: string;
+  }> = [
     {
       id: 'reading',
       icon: <BookOpen className="w-6 h-6 text-[#1d1d1f] dark:text-[#ededed]" />,
@@ -79,7 +95,7 @@ export const DisciplinesGrid: React.FC = () => {
           {modules.map((m) => (
             <div
               key={m.id}
-              onClick={scrollToSimulation}
+              onClick={() => handleModuleClick(m.id)}
               className="group cursor-pointer flex flex-col justify-between p-7 sm:p-9 rounded-2xl bg-white dark:bg-[#121215] border border-[#e5e5e7] dark:border-[#27272a] hover:border-[#1d1d1f] dark:hover:border-[#ededed] transition-all duration-200 shadow-subtle hover:shadow-apple dark:hover:shadow-apple-dark"
             >
               <div className="space-y-5">
