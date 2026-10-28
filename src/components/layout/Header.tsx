@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, ArrowRight } from 'lucide-react';
+import { Sun, Moon, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useTrack } from '../../context/TrackContext';
 
-export const Header: React.FC = () => {
+export interface HeaderProps {
+  currentView?: 'home' | 'listening';
+  onNavigate?: (view: 'home' | 'listening', targetSectionId?: string) => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  currentView = 'home',
+  onNavigate
+}) => {
   const { theme, toggleTheme } = useTheme();
   const { track, setTrack } = useTrack();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,10 +24,14 @@ export const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+  const handleNavClick = (view: 'home' | 'listening', targetId?: string) => {
+    if (onNavigate) {
+      onNavigate(view, targetId);
+    } else {
+      if (view === 'home' && targetId) {
+        const el = document.getElementById(targetId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -32,11 +44,12 @@ export const Header: React.FC = () => {
       }`}
     >
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 h-16 sm:h-18 flex items-center justify-between gap-4">
-        {/* Left: Brand Identity */}
+        {/* Left: Brand Identity & Breadcrumb */}
         <div className="flex items-center gap-8">
-          <a
-            href="#"
-            className="flex items-center gap-2.5 group tracking-apple focus:outline-none"
+          <button
+            type="button"
+            onClick={() => handleNavClick('home')}
+            className="flex items-center gap-2.5 group tracking-apple focus:outline-none text-left"
             aria-label="PREP Home"
           >
             <div className="flex items-baseline">
@@ -48,27 +61,41 @@ export const Header: React.FC = () => {
             <span className="text-xs font-mono uppercase tracking-widest px-2 py-0.5 rounded border border-[#e5e5e7] dark:border-[#27272a] bg-[#f5f5f7] dark:bg-[#121215] text-[#86868b] dark:text-[#a1a1aa] font-bold">
               PRO
             </span>
-          </a>
+          </button>
 
-          {/* Nav Links */}
-          <nav className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-tight">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center space-x-7 text-sm font-medium tracking-tight">
             <button
               type="button"
-              onClick={() => scrollTo('practice-modules')}
-              className="text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed] transition-colors"
+              onClick={() => handleNavClick('home', 'practice-modules')}
+              className={`transition-colors ${
+                currentView === 'home'
+                  ? 'text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed]'
+                  : 'text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed]'
+              }`}
             >
               2×2 Modules
             </button>
+
+            {/* Listening Tab - Takes to Listening Page */}
             <button
               type="button"
-              onClick={() => scrollTo('listening-page')}
-              className="text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed] transition-colors font-medium"
+              onClick={() => handleNavClick('listening')}
+              className={`transition-all flex items-center gap-1.5 ${
+                currentView === 'listening'
+                  ? 'text-[#1d1d1f] dark:text-white font-bold underline underline-offset-8 decoration-[#e0001a] decoration-2'
+                  : 'text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed]'
+              }`}
             >
-              Listening
+              <span>Listening</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#e0001a]/10 text-[#e0001a] font-bold">
+                PAGE
+              </span>
             </button>
+
             <button
               type="button"
-              onClick={() => scrollTo('simulation-engine')}
+              onClick={() => handleNavClick('home', 'simulation-engine')}
               className="text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed] transition-colors flex items-center gap-1.5"
             >
               <span>CD-Simulator</span>
@@ -121,15 +148,26 @@ export const Header: React.FC = () => {
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
           </button>
 
-          {/* Primary Action Button */}
-          <button
-            type="button"
-            onClick={() => scrollTo('practice-modules')}
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1d1d1f] text-white dark:bg-[#ededed] dark:text-[#0a0a0c] text-xs sm:text-sm font-semibold hover:opacity-90 active:scale-98 transition-all shadow-subtle"
-          >
-            <span>Start Practice</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#e0001a]" />
-          </button>
+          {/* Contextual Action Button */}
+          {currentView === 'listening' ? (
+            <button
+              type="button"
+              onClick={() => handleNavClick('home')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#e5e5e7] dark:border-[#27272a] bg-[#f5f5f7] dark:bg-[#121215] text-xs sm:text-sm font-semibold text-[#1d1d1f] dark:text-[#ededed] hover:border-black dark:hover:border-white transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-[#e0001a]" />
+              <span>Back to Home</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleNavClick('home', 'practice-modules')}
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1d1d1f] text-white dark:bg-[#ededed] dark:text-[#0a0a0c] text-xs sm:text-sm font-semibold hover:opacity-90 active:scale-98 transition-all shadow-subtle"
+            >
+              <span>Start Practice</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#e0001a]" />
+            </button>
+          )}
         </div>
       </div>
     </header>

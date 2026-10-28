@@ -5,12 +5,22 @@ import { ActivePracticeModule } from '../simulation/SimulationViewer';
 
 export interface DisciplinesGridProps {
   onSelectModule?: (mod: ActivePracticeModule) => void;
+  onNavigateToListening?: () => void;
 }
 
-export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({ onSelectModule }) => {
+export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
+  onSelectModule,
+  onNavigateToListening
+}) => {
   const { track } = useTrack();
 
   const handleModuleClick = (modId: ActivePracticeModule) => {
+    if (modId === 'listening' && onNavigateToListening) {
+      onNavigateToListening();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (onSelectModule) {
       onSelectModule(modId);
     }
@@ -53,8 +63,8 @@ export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({ onSelectModule
       title: 'Listening',
       duration: '30 Min',
       format: '40 Questions · 4 Sections',
-      highlight: 'UK, Australian & North American Accents',
-      actionText: 'Start Audio Test'
+      highlight: 'Full Test + Part 1, 2, 3 & 4 Practice',
+      actionText: 'Open Listening Page'
     },
     {
       id: 'speaking',
