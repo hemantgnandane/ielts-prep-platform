@@ -8,21 +8,21 @@ export const WritingWorkspace: React.FC = () => {
 
   // Persistence via localStorage
   const [part1Text, setPart1Text] = useState<string>(() => {
-    return localStorage.getItem('ielts_writing_part1') || '';
+    return localStorage.getItem('cd_writing_part1') || '';
   });
   const [part2Text, setPart2Text] = useState<string>(() => {
-    return localStorage.getItem('ielts_writing_part2') || '';
+    return localStorage.getItem('cd_writing_part2') || '';
   });
 
   const [splitRatio, setSplitRatio] = useState<number>(50); // percentage for left pane
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    localStorage.setItem('ielts_writing_part1', part1Text);
+    localStorage.setItem('cd_writing_part1', part1Text);
   }, [part1Text]);
 
   useEffect(() => {
-    localStorage.setItem('ielts_writing_part2', part2Text);
+    localStorage.setItem('cd_writing_part2', part2Text);
   }, [part2Text]);
 
   const countWords = (text: string): number => {
@@ -58,17 +58,10 @@ export const WritingWorkspace: React.FC = () => {
       onMouseLeave={() => setIsDragging(false)}
       className="h-full flex flex-col bg-white dark:bg-[#0a0a0c] text-[#1d1d1f] dark:text-[#ededed] font-sans select-none overflow-hidden"
     >
-      {/* 1. Official CD-IELTS Top Bar */}
+      {/* 1. Official CD Top Bar (IELTS name removed) */}
       <div className="px-6 py-2.5 border-b-2 border-[#d3112c] bg-white dark:bg-[#0a0a0c] flex items-center justify-between">
-        {/* Left: Official IELTS Logo & Test Taker ID */}
-        <div className="flex items-center gap-6">
-          <div className="flex items-center">
-            <span className="text-3xl font-black tracking-tight text-[#d3112c] font-sans">
-              IELTS
-            </span>
-            <span className="text-[11px] font-sans text-[#d3112c] align-top ml-0.5 font-bold">®</span>
-          </div>
-
+        {/* Left: Test Taker ID */}
+        <div className="flex items-center gap-4">
           <div className="text-base font-bold text-black dark:text-white tracking-tight">
             Test taker ID
           </div>
