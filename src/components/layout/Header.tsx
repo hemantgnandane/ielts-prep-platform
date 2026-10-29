@@ -126,18 +126,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <span>Speaking</span>
             </button>
-
-            {/* CD-Simulator */}
-            <button
-              type="button"
-              onClick={() => handleNavClick('home', 'simulation-engine')}
-              className="text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed] transition-colors flex items-center gap-1.5"
-            >
-              <span>CD-Simulator</span>
-              <span className="inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 bg-[#e0001a]/10 text-[#e0001a] rounded font-bold">
-                LIVE
-              </span>
-            </button>
           </nav>
         </div>
 
