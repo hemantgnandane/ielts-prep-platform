@@ -230,3 +230,4 @@ export const WritingPage: React.FC<WritingPageProps> = ({ onBackToHome }) => {
     </div>
   );
 };
+

@@ -5,6 +5,7 @@ import { DisciplinesGrid } from './components/disciplines/DisciplinesGrid';
 import { ListeningPage } from './components/listening/ListeningPage';
 import { ReadingPage } from './components/reading/ReadingPage';
 import { WritingPage } from './components/writing/WritingPage';
+import { SpeakingPage } from './components/speaking/SpeakingPage';
 import { SimulationViewer, ActivePracticeModule } from './components/simulation/SimulationViewer';
 import { Footer } from './components/layout/Footer';
 
@@ -13,6 +14,7 @@ export const App: React.FC = () => {
     if (window.location.hash === '#listening') return 'listening';
     if (window.location.hash === '#reading') return 'reading';
     if (window.location.hash === '#writing') return 'writing';
+    if (window.location.hash === '#speaking') return 'speaking';
     return 'home';
   });
   const [activeModule, setActiveModule] = useState<ActivePracticeModule>('writing');
@@ -26,6 +28,8 @@ export const App: React.FC = () => {
         setCurrentView('reading');
       } else if (window.location.hash === '#writing') {
         setCurrentView('writing');
+      } else if (window.location.hash === '#speaking') {
+        setCurrentView('speaking');
       } else {
         setCurrentView('home');
       }
@@ -44,6 +48,9 @@ export const App: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'writing') {
       window.location.hash = '#writing';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'speaking') {
+      window.location.hash = '#speaking';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       window.location.hash = '#home';
@@ -69,6 +76,10 @@ export const App: React.FC = () => {
     }
     if (mod === 'writing') {
       handleNavigate('writing');
+      return;
+    }
+    if (mod === 'speaking') {
+      handleNavigate('speaking');
       return;
     }
     setActiveModule(mod);
@@ -107,6 +118,7 @@ export const App: React.FC = () => {
               onNavigateToListening={() => handleNavigate('listening')}
               onNavigateToReading={() => handleNavigate('reading')}
               onNavigateToWriting={() => handleNavigate('writing')}
+              onNavigateToSpeaking={() => handleNavigate('speaking')}
             />
 
             {/* Page 3: The CD Practice Workspace */}
@@ -135,6 +147,13 @@ export const App: React.FC = () => {
         {currentView === 'writing' && (
           /* Dedicated Standalone Page for Writing */
           <WritingPage
+            onBackToHome={() => handleNavigate('home')}
+          />
+        )}
+
+        {currentView === 'speaking' && (
+          /* Dedicated Standalone Page for Speaking */
+          <SpeakingPage
             onBackToHome={() => handleNavigate('home')}
           />
         )}

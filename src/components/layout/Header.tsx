@@ -3,7 +3,7 @@ import { Sun, Moon, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useTrack } from '../../context/TrackContext';
 
-export type PageView = 'home' | 'listening' | 'reading' | 'writing';
+export type PageView = 'home' | 'listening' | 'reading' | 'writing' | 'speaking';
 
 export interface HeaderProps {
   currentView?: PageView;
@@ -66,7 +66,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-6 lg:space-x-7 text-sm font-medium tracking-tight">
+          <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 text-sm font-medium tracking-tight">
             <button
               type="button"
               onClick={() => handleNavClick('home', 'practice-modules')}
@@ -88,6 +88,19 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Reading</span>
             </button>
 
+            {/* Writing Tab */}
+            <button
+              type="button"
+              onClick={() => handleNavClick('writing')}
+              className={`transition-all ${
+                currentView === 'writing'
+                  ? 'text-[#1d1d1f] dark:text-white font-bold underline underline-offset-8 decoration-[#e0001a] decoration-2'
+                  : 'text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed]'
+              }`}
+            >
+              <span>Writing</span>
+            </button>
+
             {/* Listening Tab */}
             <button
               type="button"
@@ -101,17 +114,17 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Listening</span>
             </button>
 
-            {/* Writing Tab */}
+            {/* Speaking Tab */}
             <button
               type="button"
-              onClick={() => handleNavClick('writing')}
+              onClick={() => handleNavClick('speaking')}
               className={`transition-all ${
-                currentView === 'writing'
+                currentView === 'speaking'
                   ? 'text-[#1d1d1f] dark:text-white font-bold underline underline-offset-8 decoration-[#e0001a] decoration-2'
                   : 'text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed]'
               }`}
             >
-              <span>Writing</span>
+              <span>Speaking</span>
             </button>
 
             {/* CD-Simulator */}

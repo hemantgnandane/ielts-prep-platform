@@ -8,13 +8,15 @@ export interface DisciplinesGridProps {
   onNavigateToListening?: () => void;
   onNavigateToReading?: () => void;
   onNavigateToWriting?: () => void;
+  onNavigateToSpeaking?: () => void;
 }
 
 export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
   onSelectModule,
   onNavigateToListening,
   onNavigateToReading,
-  onNavigateToWriting
+  onNavigateToWriting,
+  onNavigateToSpeaking
 }) => {
   const { track } = useTrack();
 
@@ -33,6 +35,12 @@ export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
 
     if (modId === 'writing' && onNavigateToWriting) {
       onNavigateToWriting();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (modId === 'speaking' && onNavigateToSpeaking) {
+      onNavigateToSpeaking();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -88,8 +96,8 @@ export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
       title: 'Speaking',
       duration: '11–14 Min',
       format: '3 Parts · 1-on-1 Interview',
-      highlight: 'Interactive Cue Card with Prep Timer',
-      actionText: 'Practice Cue Card'
+      highlight: 'Full Test + Part 1, 2 & 3 Practice',
+      actionText: 'Open Speaking Page'
     }
   ];
 
