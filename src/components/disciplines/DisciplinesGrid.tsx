@@ -6,15 +6,23 @@ import { ActivePracticeModule } from '../simulation/SimulationViewer';
 export interface DisciplinesGridProps {
   onSelectModule?: (mod: ActivePracticeModule) => void;
   onNavigateToListening?: () => void;
+  onNavigateToReading?: () => void;
 }
 
 export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
   onSelectModule,
-  onNavigateToListening
+  onNavigateToListening,
+  onNavigateToReading
 }) => {
   const { track } = useTrack();
 
   const handleModuleClick = (modId: ActivePracticeModule) => {
+    if (modId === 'reading' && onNavigateToReading) {
+      onNavigateToReading();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (modId === 'listening' && onNavigateToListening) {
       onNavigateToListening();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -46,7 +54,7 @@ export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
       duration: '60 Min',
       format: '40 Questions · 3 Passages',
       highlight: track === 'academic' ? 'Academic Research Passages' : 'Workplace & General Survival Texts',
-      actionText: 'Launch Simulator'
+      actionText: 'Open Reading Page'
     },
     {
       id: 'writing',

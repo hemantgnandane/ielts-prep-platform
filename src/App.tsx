@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from './components/layout/Header';
+import { Header, PageView } from './components/layout/Header';
 import { Hero } from './components/hero/Hero';
 import { DisciplinesGrid } from './components/disciplines/DisciplinesGrid';
 import { ListeningPage } from './components/listening/ListeningPage';
+import { ReadingPage } from './components/reading/ReadingPage';
 import { SimulationViewer, ActivePracticeModule } from './components/simulation/SimulationViewer';
 import { Footer } from './components/layout/Footer';
 
 export const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'listening'>(() => {
-    return window.location.hash === '#listening' ? 'listening' : 'home';
+  const [currentView, setCurrentView] = useState<PageView>(() => {
+    if (window.location.hash === '#listening') return 'listening';
+    if (window.location.hash === '#reading') return 'reading';
+    return 'home';
   });
   const [activeModule, setActiveModule] = useState<ActivePracticeModule>('writing');
 
@@ -17,6 +20,8 @@ export const App: React.FC = () => {
     const handleHashChange = () => {
       if (window.location.hash === '#listening') {
         setCurrentView('listening');
+      } else if (window.location.hash === '#reading') {
+        setCurrentView('reading');
       } else {
         setCurrentView('home');
       }
@@ -25,11 +30,16 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleNavigate = (view: 'home' | 'listening', targetSectionId?: string) => {
+  const handleNavigate = (view: PageView, targetSectionId?: string) => {
     setCurrentView(view);
-    window.location.hash = view === 'listening' ? '#listening' : '#home';
-
-    if (view === 'home') {
+    if (view === 'listening') {
+      window.location.hash = '#listening';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'reading') {
+      window.location.hash = '#reading';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.location.hash = '#home';
       if (targetSectionId) {
         setTimeout(() => {
           const el = document.getElementById(targetSectionId);
@@ -38,8 +48,6 @@ export const App: React.FC = () => {
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -48,11 +56,25 @@ export const App: React.FC = () => {
       handleNavigate('listening');
       return;
     }
+    if (mod === 'reading') {
+      handleNavigate('reading');
+      return;
+    }
     setActiveModule(mod);
     const el = document.getElementById('simulation-engine');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleLaunchExamFromReading = (_testId: number | string, _passageNumber?: number) => {
+    setActiveModule('reading');
+    setCurrentView('home');
+    window.location.hash = '#home';
+    setTimeout(() => {
+      const el = document.getElementById('simulation-engine');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 80);
   };
 
   return (
@@ -63,7 +85,7 @@ export const App: React.FC = () => {
       />
 
       <main>
-        {currentView === 'home' ? (
+        {currentView === 'home' && (
           <>
             {/* Page 1: Centered Apple-Style Hero */}
             <Hero />
@@ -72,6 +94,7 @@ export const App: React.FC = () => {
             <DisciplinesGrid
               onSelectModule={handleSelectModule}
               onNavigateToListening={() => handleNavigate('listening')}
+              onNavigateToReading={() => handleNavigate('reading')}
             />
 
             {/* Page 3: The CD Practice Workspace */}
@@ -80,10 +103,20 @@ export const App: React.FC = () => {
               onModuleChange={setActiveModule}
             />
           </>
-        ) : (
+        )}
+
+        {currentView === 'listening' && (
           /* Dedicated Standalone Page for Listening */
           <ListeningPage
             onBackToHome={() => handleNavigate('home')}
+          />
+        )}
+
+        {currentView === 'reading' && (
+          /* Dedicated Standalone Page for Reading */
+          <ReadingPage
+            onBackToHome={() => handleNavigate('home')}
+            onLaunchExam={handleLaunchExamFromReading}
           />
         )}
       </main>

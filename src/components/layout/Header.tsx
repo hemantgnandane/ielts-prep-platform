@@ -3,9 +3,11 @@ import { Sun, Moon, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useTrack } from '../../context/TrackContext';
 
+export type PageView = 'home' | 'listening' | 'reading';
+
 export interface HeaderProps {
-  currentView?: 'home' | 'listening';
-  onNavigate?: (view: 'home' | 'listening', targetSectionId?: string) => void;
+  currentView?: PageView;
+  onNavigate?: (view: PageView, targetSectionId?: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (view: 'home' | 'listening', targetId?: string) => {
+  const handleNavClick = (view: PageView, targetId?: string) => {
     if (onNavigate) {
       onNavigate(view, targetId);
     } else {
@@ -44,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
       }`}
     >
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 h-16 sm:h-18 flex items-center justify-between gap-4">
-        {/* Left: Brand Identity & Breadcrumb */}
+        {/* Left: Brand Identity & Nav Links */}
         <div className="flex items-center gap-8">
           <button
             type="button"
@@ -77,6 +79,19 @@ export const Header: React.FC<HeaderProps> = ({
               2×2 Modules
             </button>
 
+            {/* Reading Tab - Takes to Reading Page */}
+            <button
+              type="button"
+              onClick={() => handleNavClick('reading')}
+              className={`transition-all flex items-center gap-1.5 ${
+                currentView === 'reading'
+                  ? 'text-[#1d1d1f] dark:text-white font-bold underline underline-offset-8 decoration-[#e0001a] decoration-2'
+                  : 'text-[#86868b] hover:text-[#1d1d1f] dark:text-[#a1a1aa] dark:hover:text-[#ededed]'
+              }`}
+            >
+              <span>Reading</span>
+            </button>
+
             {/* Listening Tab - Takes to Listening Page */}
             <button
               type="button"
@@ -88,9 +103,6 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <span>Listening</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#e0001a]/10 text-[#e0001a] font-bold">
-                PAGE
-              </span>
             </button>
 
             <button
@@ -149,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Contextual Action Button */}
-          {currentView === 'listening' ? (
+          {currentView !== 'home' ? (
             <button
               type="button"
               onClick={() => handleNavClick('home')}
