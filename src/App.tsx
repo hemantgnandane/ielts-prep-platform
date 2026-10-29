@@ -4,6 +4,7 @@ import { Hero } from './components/hero/Hero';
 import { DisciplinesGrid } from './components/disciplines/DisciplinesGrid';
 import { ListeningPage } from './components/listening/ListeningPage';
 import { ReadingPage } from './components/reading/ReadingPage';
+import { WritingPage } from './components/writing/WritingPage';
 import { SimulationViewer, ActivePracticeModule } from './components/simulation/SimulationViewer';
 import { Footer } from './components/layout/Footer';
 
@@ -11,6 +12,7 @@ export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<PageView>(() => {
     if (window.location.hash === '#listening') return 'listening';
     if (window.location.hash === '#reading') return 'reading';
+    if (window.location.hash === '#writing') return 'writing';
     return 'home';
   });
   const [activeModule, setActiveModule] = useState<ActivePracticeModule>('writing');
@@ -22,6 +24,8 @@ export const App: React.FC = () => {
         setCurrentView('listening');
       } else if (window.location.hash === '#reading') {
         setCurrentView('reading');
+      } else if (window.location.hash === '#writing') {
+        setCurrentView('writing');
       } else {
         setCurrentView('home');
       }
@@ -37,6 +41,9 @@ export const App: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'reading') {
       window.location.hash = '#reading';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'writing') {
+      window.location.hash = '#writing';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       window.location.hash = '#home';
@@ -58,6 +65,10 @@ export const App: React.FC = () => {
     }
     if (mod === 'reading') {
       handleNavigate('reading');
+      return;
+    }
+    if (mod === 'writing') {
+      handleNavigate('writing');
       return;
     }
     setActiveModule(mod);
@@ -95,6 +106,7 @@ export const App: React.FC = () => {
               onSelectModule={handleSelectModule}
               onNavigateToListening={() => handleNavigate('listening')}
               onNavigateToReading={() => handleNavigate('reading')}
+              onNavigateToWriting={() => handleNavigate('writing')}
             />
 
             {/* Page 3: The CD Practice Workspace */}
@@ -117,6 +129,13 @@ export const App: React.FC = () => {
           <ReadingPage
             onBackToHome={() => handleNavigate('home')}
             onLaunchExam={handleLaunchExamFromReading}
+          />
+        )}
+
+        {currentView === 'writing' && (
+          /* Dedicated Standalone Page for Writing */
+          <WritingPage
+            onBackToHome={() => handleNavigate('home')}
           />
         )}
       </main>

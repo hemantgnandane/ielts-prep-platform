@@ -7,12 +7,14 @@ export interface DisciplinesGridProps {
   onSelectModule?: (mod: ActivePracticeModule) => void;
   onNavigateToListening?: () => void;
   onNavigateToReading?: () => void;
+  onNavigateToWriting?: () => void;
 }
 
 export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
   onSelectModule,
   onNavigateToListening,
-  onNavigateToReading
+  onNavigateToReading,
+  onNavigateToWriting
 }) => {
   const { track } = useTrack();
 
@@ -25,6 +27,12 @@ export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
 
     if (modId === 'listening' && onNavigateToListening) {
       onNavigateToListening();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (modId === 'writing' && onNavigateToWriting) {
+      onNavigateToWriting();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -63,7 +71,7 @@ export const DisciplinesGrid: React.FC<DisciplinesGridProps> = ({
       duration: '60 Min',
       format: 'Task 1 (150w) & Task 2 (250w)',
       highlight: track === 'academic' ? 'Task 1 Visual Data Report' : 'Task 1 Functional Letter',
-      actionText: 'Open Writing Canvas'
+      actionText: 'Open Writing Page'
     },
     {
       id: 'listening',
