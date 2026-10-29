@@ -19,13 +19,13 @@ export const Hero: React.FC = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_50%_at_50%_-10%,rgba(224,0,26,0.03),transparent)] pointer-events-none" />
 
       {/* Centered Minimalist Content */}
-      <div className="w-full max-w-5xl mx-auto text-center flex flex-col items-center justify-center relative z-10 space-y-8">
+      <div className="w-full max-w-4xl mx-auto text-center flex flex-col items-center justify-center relative z-10 space-y-7">
         {/* Eyebrow Badge */}
         <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[#e5e5e7] dark:border-[#27272a] bg-[#fbfbfd] dark:bg-[#121215] text-xs sm:text-sm font-mono font-medium text-[#1d1d1f] dark:text-[#ededed] shadow-subtle animate-fade-in">
           <ShieldCheck className="w-4 h-4 text-[#e0001a]" />
-          <span>Official Evaluation Standards</span>
+          <span>Evaluation Standards</span>
           <span className="w-1.5 h-1.5 rounded-full bg-[#86868b] dark:bg-[#a1a1aa]" />
-          <span className="text-[#86868b] dark:text-[#a1a1aa] font-semibold">2026 Scale</span>
+          <span className="text-[#86868b] dark:text-[#a1a1aa] font-semibold">2026 Ready</span>
         </div>
 
         {/* Headline */}
@@ -69,8 +69,8 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* Instant Band Score Calculator (Replaces the bulky marketing paragraph) */}
-        <div className="w-full text-left">
+        {/* Simple Band Scroll Bar & Score Beside It */}
+        <div className="w-full">
           <BandScoreCalculator />
         </div>
 
